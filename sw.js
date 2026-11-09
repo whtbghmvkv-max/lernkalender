@@ -1,11 +1,13 @@
 /* Lernkästchen – Service Worker: macht die App offline nutzbar.
    Deine Lerndaten liegen NICHT hier, sondern im Speicher des Browsers (localStorage + IndexedDB);
    ein Update der App ändert sie nie. */
-var CACHE = "lernkaestchen-app-1";
+var CACHE = "lernkaestchen-app-3";
 var ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./icon-maskable-512.png", "./apple-touch-icon.png"];
 
 self.addEventListener("install", function (e) {
-  e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(ASSETS); }).then(function () { return self.skipWaiting(); }));
+  e.waitUntil(caches.open(CACHE).then(function (c) {
+    return c.addAll(ASSETS.map(function (u) { return new Request(u, { cache: "reload" }); }));
+  }).then(function () { return self.skipWaiting(); }));
 });
 
 self.addEventListener("activate", function (e) {
